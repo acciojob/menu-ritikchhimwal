@@ -1,36 +1,51 @@
-import React, { useState } from "react";
-import Menu from "./Menu";
-import Categories from "./Categories";
-import items from "./data";
-import './style.css';
 
-const allCategories = ["all", ...new Set(items.map((item) => item.category))];
+import React, { useState } from "react";
+import { dishesData } from "./data";
+import Dish from "./dish";
+import '../styles/App.css';
 
 function App() {
-  const [menuItems, setMenuItems] = useState(items);
-  const [categories, setCategories] = useState(allCategories);
-
-  const filterItems = (category) => {
-    if (category === "all") {
-      setMenuItems(items);
-      return;
+    const [data, setData] = React.useState(dishesData);
+    
+    const handleFilter = (e) => {
+        const category = e.target.value;
+        
+        if(category == 'all') {
+            const filteredData = dishesData;
+            setData(filteredData);
+        }
+        else {
+            let filteredData = dishesData.filter((dish) => dish.category == category);
+            setData(filteredData);
+        }
     }
-    const newItems = items.filter((item) => item.category === category);
-    setMenuItems(newItems);
-  };
 
-  return (
-    <main>
-      <section className="menu-section">
-        <div className="title">
-          <h2>Our Menu</h2>
-          <div className="underline"></div>
+
+    return <div id="main">
+        <h1>Our Menu</h1>
+        <div className="filters">
+            <button value='all' onClick={(e) => handleFilter(e)}>All</button>
+
+            <button value='breakfast' data-test-id="menu-item-breakfast" id="filter-btn-1" onClick={(e) => handleFilter(e)}>Breakfast</button>
+
+            <button value='lunch' data-test-id="menu-item-lunch" id="filter-btn-3" onClick={(e) => handleFilter(e)}>Lunch</button>
+
+            <button value='shakes' data-test-id="menu-item-shakes" id="filter-btn-2" onClick={(e) => handleFilter(e)}>Shakes</button>
         </div>
-        <Categories categories={categories} filterItems={filterItems} />
-        <Menu items={menuItems} />
-      </section>
-    </main>
-  );
+        <div className="dishedContainer">
+            {
+                data.map((dish) => <Dish key={dish.id} details={dish} />)
+            }
+        </div>
+    </div>
 }
 
 export default App;
+
+
+/*
+<button onClick={(e) => handleFilter(e)}>All</button>
+<button data-test-id="menu-item-shakes" id="filter-btn-3" onClick={(e) => handleFilter(e)}>Shakes</button>
+<button data-test-id="menu-item-lunch" id="filter-btn-2" onClick={(e) => handleFilter(e)}>Lunch</button>
+<button data-test-id="menu-item-breakfast" id="filter-btn-1" onClick={(e) => handleFilter(e)}>Breakfast</button>
+*/
